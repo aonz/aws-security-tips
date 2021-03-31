@@ -59,3 +59,43 @@ aws ssm start-session \
 
 # RDP to localhost:13389, use .pem file to get the password
 ```
+
+3. Sensitive data with AWS Secrets Manager & AWS Systems Manager Parameter Store
+
+- Deploy AWS resources with AWS CDK.
+
+```
+cd 3-sensitive-data
+
+yarn && yarn build
+
+cdk deploy --require-approval never
+```
+
+- Edit `3-sensitive-data/setup` and replace IAM role ARN holder with the output from CDK.
+
+```
+./setup.sh
+```
+
+- EKS envelope encryption, Sealed Secrets and External Secrets
+
+```
+# Envelope encryption - Check AWS CloudTrail Event
+
+kubectl get secret envelope-encryption -o jsonpath="{.data.value}" | base64 --decode
+
+# Sealed Secrets
+
+kubectl get SealedSecret -o yaml
+
+kubectl get secret sealed-secret -o jsonpath="{.data.value}" | base64 --decode
+
+# External Secrets
+
+kubectl get ExternalSecret -o yaml
+
+kubectl get secret external-secrets-secrets-manager -o jsonpath="{.data.value}" | base64 --decode
+
+kubectl get secret external-secrets-parameter-store -o jsonpath="{.data.value}" | base64 --decode
+```
