@@ -1,5 +1,7 @@
 # AWS Security Tips
 
+Note that this repo is used for the demonstration purpose only. Some AWS managed policies are used which might not follow the best practice for using the least privilege IAM permissions.
+
 ## Prerequisite
 
 - Install [Git](https://git-scm.com/downloads)
@@ -60,7 +62,7 @@ aws ssm start-session \
 # RDP to localhost:13389, use .pem file to get the password
 ```
 
-3. Sensitive data with AWS Secrets Manager & AWS Systems Manager Parameter Store
+## 3. Sensitive data with AWS Secrets Manager & AWS Systems Manager Parameter Store
 
 - Deploy AWS resources with AWS CDK.
 
@@ -100,7 +102,7 @@ kubectl get secret external-secrets-secrets-manager -o jsonpath="{.data.value}" 
 kubectl get secret external-secrets-parameter-store -o jsonpath="{.data.value}" | base64 --decode
 ```
 
-4. Amazon RDS/Aurora - IAM database authentication
+## 4. Amazon RDS/Aurora - IAM database authentication
 
 - Deploy AWS resources with AWS CDK.
 
