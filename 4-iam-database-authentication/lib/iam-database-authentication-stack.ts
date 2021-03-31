@@ -44,7 +44,7 @@ export class IamDatabaseAuthenticationStack extends cdk.Stack {
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE },
       environment: {
-        RDS_HOSTNAME: rdsInstance.dbInstanceEndpointAddress,
+        DB_HOSTNAME: rdsInstance.dbInstanceEndpointAddress,
       },
       timeout: cdk.Duration.seconds(30),
     });
@@ -84,6 +84,6 @@ export class IamDatabaseAuthenticationStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'EC2 Instance ID', { value: ec2Instance.instanceId });
-    new cdk.CfnOutput(this, 'RDS Host', { value: rdsInstance.dbInstanceEndpointAddress });
+    new cdk.CfnOutput(this, 'DB Host', { value: rdsInstance.dbInstanceEndpointAddress });
   }
 }
