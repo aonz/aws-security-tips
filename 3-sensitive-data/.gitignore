@@ -9,3 +9,4 @@ cdk.out
 
 sealed-secret.pem
 k8s/sealed-secret-secret.yaml
+!src/index.js
