@@ -1,27 +1,23 @@
 const mysql = require('mysql2/promise');
 const AWS = require('aws-sdk');
 
-exports.handler = async function (event, context) {
+AWS.config.logger = console;
+
+let connection;
+
+async function init() {
+  const signer = new AWS.RDS.Signer({
+    region: process.env.AWS_REGION,
+    hostname: process.env.DB_HOSTNAME,
+    port: 3306,
+    username: 'default',
+  });
+  // Generating an auth token synchronously.
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/RDS/Signer.html#getAuthToken-property
+  const token = signer.getAuthToken({ username: 'user' });
+  console.log(`Token: ${token}`);
   try {
-    const signer = new AWS.RDS.Signer();
-    const token = await new Promise((resolve, reject) => {
-      signer.getAuthToken(
-        {
-          region: process.env.AWS_REGION,
-          hostname: process.env.DB_HOSTNAME,
-          port: 3306,
-          username: 'user',
-        },
-        (err, token) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(token);
-        }
-      );
-    });
-    console.log(`Token: ${token}`);
-    const connection = await mysql.createConnection({
+    connection = await mysql.createConnection({
       host: process.env.DB_HOSTNAME,
       port: 3306,
       user: 'user',
@@ -33,6 +29,23 @@ exports.handler = async function (event, context) {
       },
       Promise,
     });
+    console.log('DB connection created.');
+  } catch (error) {
+    console.log('Failed to create DB connection.');
+    console.log(error);
+  }
+}
+
+const initPromise = init();
+
+exports.handler = async function (event, context) {
+  await initPromise;
+  // Safeguard when using Lambda Provisioned Concurrency
+  if (!connection) {
+    console.log('Call init(); again.');
+    await init();
+  }
+  try {
     const [rows, fields] = await connection.execute('SELECT 1;');
     console.log(`Rows: ${JSON.stringify(rows)}`);
   } catch (error) {

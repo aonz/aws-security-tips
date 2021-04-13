@@ -38,7 +38,7 @@ export class IamDatabaseAuthenticationStack extends cdk.Stack {
     );
     // rdsInstance.grantConnect(lambdaRole);
 
-    new lambda.NodejsFunction(this, 'LambdaFunction', {
+    const fn = new lambda.NodejsFunction(this, 'LambdaFunction', {
       entry: path.join(__dirname, '../src/index.js'),
       role: lambdaRole,
       vpc,
@@ -48,6 +48,8 @@ export class IamDatabaseAuthenticationStack extends cdk.Stack {
       },
       timeout: cdk.Duration.seconds(30),
     });
+
+    // fn.currentVersion.addAlias('test', { provisionedConcurrentExecutions: 1 });
 
     const ec2Role = new iam.Role(this, 'Ec2IamRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),

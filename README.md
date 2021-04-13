@@ -123,6 +123,9 @@ ssh -i <.pem file> ec2-user@<ec2 instance id>
 
 sudo su -
 
+yum install -y https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+yum install -y mysql-community-client
+
 DB_HOSTNAME=<>
 mysql -h ${DB_HOSTNAME} -u admin -p
 
