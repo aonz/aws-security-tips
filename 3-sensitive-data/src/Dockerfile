@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16.4
 WORKDIR /usr/src/app
 
 COPY package*.json ./
